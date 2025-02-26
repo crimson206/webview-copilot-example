@@ -3,6 +3,10 @@
 import * as vscode from 'vscode';
 import { ChatWebviewPanel } from './chatbot/webview';
 
+/**
+ * Activates the extension and registers the chatbot command
+ * @param context The extension context provided by VS Code
+ */
 export function activate(context: vscode.ExtensionContext) {
 
     let disposable = vscode.commands.registerCommand('chatbot.start', () => {

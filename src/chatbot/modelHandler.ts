@@ -3,7 +3,15 @@
 import * as vscode from 'vscode';
 import { ChatMessage } from './types';
 
+/**
+ * Handles interactions with the language model
+ */
 export class ModelHandler {
+    /**
+     * Gets the appropriate language model for chat
+     * @returns Promise containing the selected chat model
+     * @throws Error if no suitable model is found
+     */
     private static async getModel() {
         const [model] = await vscode.lm.selectChatModels({ 
             vendor: 'copilot',
@@ -17,6 +25,12 @@ export class ModelHandler {
         return model;
     }
 
+    /**
+     * Generates a response from the language model
+     * @param userMessage The current user message
+     * @param chatHistory Array of previous chat messages
+     * @returns AsyncIterable containing the streamed response
+     */
     static async getResponse(userMessage: string, chatHistory: ChatMessage[]): Promise<AsyncIterable<string>> {
         const model = await this.getModel();
         

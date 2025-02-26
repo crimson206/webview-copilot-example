@@ -1,11 +1,12 @@
-// src/chatbot/webview.ts
-
 import * as vscode from 'vscode';
 import { ChatHistoryManager } from './history';
 import { ModelHandler } from './modelHandler';
 import * as fs from "fs";
 import * as path from "path";
 
+/**
+ * Manages the chat webview panel and handles communication between the webview and extension
+ */
 export class ChatWebviewPanel {
     public static currentPanel: ChatWebviewPanel | undefined;
     private static readonly viewType = 'chatView';
@@ -25,6 +26,10 @@ export class ChatWebviewPanel {
         this._loadHistory();
     }
 
+    /**
+     * Creates a new chat panel or reveals an existing one
+     * @param context The extension context
+     */
     public static createOrShow(context: vscode.ExtensionContext) {
         const column = vscode.window.activeTextEditor
             ? vscode.window.activeTextEditor.viewColumn
@@ -45,6 +50,9 @@ export class ChatWebviewPanel {
         ChatWebviewPanel.currentPanel = new ChatWebviewPanel(panel, context);
     }
 
+    /**
+     * Loads and displays the chat history in the webview
+     */
     private async _loadHistory() {
         const history = await this.historyManager.getHistory();
         this.panel.webview.postMessage({
@@ -53,6 +61,9 @@ export class ChatWebviewPanel {
         });
     }
 
+    /**
+     * Sets up message listeners for webview communication
+     */
     private async _setWebviewMessageListener() {
         this.panel.webview.onDidReceiveMessage(async (message) => {
             switch (message.type) {
@@ -91,6 +102,10 @@ export class ChatWebviewPanel {
         });
     }
     
+    /**
+     * Generates the HTML content for the webview
+     * @returns The HTML content as a string
+     */
     private getWebviewContent(): string {
         const indexPath = path.join(this.context.extensionPath, "out", "webview", "index.html");
         let indexHtml = fs.readFileSync(indexPath, "utf-8");
